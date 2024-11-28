@@ -9,6 +9,9 @@ trigger:
 pool:
   name: PoolRunners
 
+variables:
+  IMAGE_NAME: 'your-docker-registry/your-image-name'
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -61,5 +64,12 @@ steps:
     artifactName: 'drop'
   displayName: 'Publish build artifacts'
 
+########----Docker----########### 
+
+- script: |
+    docker build -t nestjs-baseapp .
+  displayName: 'Build Docker image localy'
+
+#################################
 
 
