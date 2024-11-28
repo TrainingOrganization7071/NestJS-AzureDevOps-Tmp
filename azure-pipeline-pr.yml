@@ -38,9 +38,31 @@ steps:
     npm run test
   displayName: 'Run unit tests'
 
+#########--Test Coverage--##########
+
 - script: |
     npm run test:cov
   displayName: 'Run test coverage'
+
+- script: |
+    mkdir -p $(Build.ArtifactStagingDirectory)/coverage
+    cp -R coverage/* $(Build.ArtifactStagingDirectory)/coverage/
+  displayName: 'Prepare code coverage report'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)/coverage
+    artifactName: 'code-coverage'
+  displayName: 'Publish code coverage report'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: 'coverage/cobertura-coverage.xml'
+    reportDirectory: 'coverage'
+  displayName: 'Publish code coverage results'
+
+######################################
 
 - script: |
     npm run test:e2e
