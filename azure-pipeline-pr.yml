@@ -45,6 +45,11 @@ steps:
   displayName: 'Run test coverage'
 
 - script: |
+    echo "Checking coverage directory:"
+    ls -R coverage || echo "No coverage directory found"
+  displayName: 'Debug coverage directory'
+
+- script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/coverage
     cp -R coverage/* $(Build.ArtifactStagingDirectory)/coverage/
   displayName: 'Prepare code coverage report'
@@ -58,8 +63,8 @@ steps:
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: 'Cobertura'
-    summaryFileLocation: 'coverage/cobertura-coverage.xml'
-    reportDirectory: 'coverage'
+    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/cobertura-coverage.xml'
+    reportDirectory: '$(Build.ArtifactStagingDirectory)/coverage'
   displayName: 'Publish code coverage results'
 
 ######################################
