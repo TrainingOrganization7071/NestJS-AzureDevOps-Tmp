@@ -10,66 +10,95 @@ pool:
   name: PoolRunners
 
 variables:
-  IMAGE_NAME: 'your-docker-registry/your-image-name'
+  IMAGE_NAME: 'nestjs-baseapp'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+stages:
 
-- task: Cache@2
-  inputs:
-    key: 'npm | "$(Agent.OS)" | package-lock.json'
-    path: $(Build.SourcesDirectory)/node_modules
-    cacheHitVar: CACHE_RESTORED
-  displayName: 'Cache node_modules'
+# Stage 1: Install Node.js and Dependencies
+- stage: Install
+  displayName: 'Install Stage'
+  jobs:
+  - job: Install
+    displayName: 'Install Node.js and Dependencies'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
 
-- script: |
-    npm ci
-  displayName: 'Install dependencies'
+    - task: Cache@2
+      inputs:
+        key: 'npm | "$(Agent.OS)" | package-lock.json'
+        path: $(Build.SourcesDirectory)/node_modules
+        cacheHitVar: CACHE_RESTORED
+      displayName: 'Cache node_modules'
 
-- script: |
-    npm run format
-  displayName: 'Format code'
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
 
-- script: |
-    npm run lint
-  displayName: 'Lint code'
+# Stage 2: Lint and Test
+- stage: LintAndTest
+  displayName: 'Lint and Test Stage'
+  dependsOn: Install
+  jobs:
+  - job: LintAndTest
+    displayName: 'Lint and Run Tests'
+    steps:
+    - script: |
+        npm run format
+      displayName: 'Format code'
 
-- script: |
-    npm run test
-  displayName: 'Run unit tests'
+    - script: |
+        npm run lint
+      displayName: 'Lint code'
 
-- script: |
-    npm run test:cov
-  displayName: 'Run test coverage'
+    - script: |
+        npm run test
+      displayName: 'Run unit tests'
 
-- script: |
-    npm run test:e2e
-  displayName: 'Run end-to-end tests'
+    - script: |
+        npm run test:cov
+      displayName: 'Run test coverage'
 
-- script: |
-    npm audit --audit-level=high --production || exit 0
-  displayName: 'Run security audit'
+    - script: |
+        npm run test:e2e
+      displayName: 'Run end-to-end tests'
 
-- script: |
-    npm run build
-    cp -R dist/* $(Build.ArtifactStagingDirectory)/
-  displayName: 'Build and prepare artifacts'
+    - script: |
+        npm audit --audit-level=high --production || exit 0
+      displayName: 'Run security audit'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)
-    artifactName: 'drop'
-  displayName: 'Publish build artifacts'
+# Stage 3: Build Project
+- stage: Build
+  displayName: 'Build Stage'
+  dependsOn: LintAndTest
+  jobs:
+  - job: Build
+    displayName: 'Build and Publish Artifacts'
+    steps:
+    - script: |
+        npm run build
+        mkdir -p $(Build.ArtifactStagingDirectory)
+        cp -R dist/* $(Build.ArtifactStagingDirectory)/
+      displayName: 'Build and prepare artifacts'
 
-########----Docker----########### 
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: 'drop'
+      displayName: 'Publish build artifacts'
 
-- script: |
-    docker build -t nestjs-baseapp .
-  displayName: 'Build Docker image localy'
-
-#################################
+# Stage 4: Docker Build
+- stage: Docker
+  displayName: 'Docker Build Stage'
+  dependsOn: Build
+  jobs:
+  - job: DockerBuild
+    displayName: 'Build Docker Image'
+    steps:
+    - script: |
+        docker build -t $(IMAGE_NAME) .
+      displayName: 'Build Docker image locally'
 
 
