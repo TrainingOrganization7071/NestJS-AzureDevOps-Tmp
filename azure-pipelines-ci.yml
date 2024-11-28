@@ -46,6 +46,10 @@ stages:
     displayName: 'Lint and Run Tests'
     steps:
     - script: |
+        npm ci
+      displayName: 'Install dependencies'
+
+    - script: |
         npm run format
       displayName: 'Format code'
 
@@ -77,6 +81,10 @@ stages:
   - job: Build
     displayName: 'Build and Publish Artifacts'
     steps:
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+      
     - script: |
         npm run build
         mkdir -p $(Build.ArtifactStagingDirectory)

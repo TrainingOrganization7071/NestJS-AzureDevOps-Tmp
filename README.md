@@ -97,3 +97,131 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+# Azure DevOps Pipeline: Benefits of a Restructured Pipeline
+
+This document highlights the advantages of using a **staged pipeline** approach in Azure DevOps over a single-step, sequential pipeline. The restructured pipeline improves organization, maintainability, and scalability, while aligning with CI/CD best practices.
+
+---
+
+## 1. Better Organization and Maintainability
+
+### Restructured Pipeline:
+- Each task is logically grouped into stages (e.g., `Install`, `LintAndTest`, `Build`, `Docker`), each serving a specific purpose.
+- Easier to understand what each part of the pipeline is responsible for.
+
+### Your Pipeline:
+- All tasks are in a single list, making it harder to identify the purpose of each step at a glance.
+
+**Benefit**: The structured approach improves readability and maintainability, especially for larger teams or complex projects.
+
+---
+
+## 2. Clear Dependencies
+
+### Restructured Pipeline:
+- Stages explicitly define dependencies (e.g., `LintAndTest` depends on `Install`, `Build` depends on `LintAndTest`).
+- Ensures previous steps are successful before moving forward.
+
+### Your Pipeline:
+- Tasks execute sequentially without explicit dependency or logical grouping.
+
+**Benefit**: Clear dependencies reduce the chance of running unnecessary steps if earlier ones fail, saving time and avoiding confusion.
+
+---
+
+## 3. Easier Debugging and Failure Isolation
+
+### Restructured Pipeline:
+- Failures are isolated to specific stages (e.g., if `LintAndTest` fails, you know the issue lies in formatting, linting, or testing).
+- Logs and statuses for each stage are separate, making it easier to pinpoint problems.
+
+### Your Pipeline:
+- Failures may occur anywhere, requiring scanning through the entire pipeline log for debugging.
+
+**Benefit**: Debugging is faster and more precise with isolated stages and logs.
+
+---
+
+## 4. Potential for Parallelization
+
+### Restructured Pipeline:
+- Independent jobs or tasks in different stages (e.g., formatting, linting, testing) can run in parallel to save time, depending on the Azure DevOps pool configuration.
+
+### Your Pipeline:
+- All tasks run sequentially, even if some could technically execute in parallel.
+
+**Benefit**: Parallelization (if applicable) reduces pipeline execution time, especially for large projects.
+
+---
+
+## 5. Reusability and Extensibility
+
+### Restructured Pipeline:
+- Adding or modifying functionality is easier because each stage is self-contained.
+- Stages can be reused in other pipelines (e.g., reusing the `LintAndTest` or `Build` stage for similar Node.js projects).
+
+### Your Pipeline:
+- Modifying or extending tasks may require significant restructuring, as everything is in a single block.
+
+**Benefit**: The modular structure makes it easier to extend and reuse parts of the pipeline for similar projects.
+
+---
+
+## 6. Visibility and Reporting
+
+### Restructured Pipeline:
+- Azure DevOps provides a clear view of each stage and its status, making it easy to monitor progress and identify bottlenecks.
+- Success or failure is reported at the stage level.
+
+### Your Pipeline:
+- All tasks are grouped together, so the entire pipeline appears as one block in the pipeline overview.
+
+**Benefit**: Better visibility of the pipeline execution process with more granular reporting.
+
+---
+
+## 7. Scalability for Larger Teams or Projects
+
+### Restructured Pipeline:
+- Ideal for larger teams where responsibilities are divided (e.g., developers focusing on `LintAndTest`, DevOps engineers on `Build` and `Docker` stages).
+- Future enhancements (e.g., adding stages for deployment or notifications) are straightforward.
+
+### Your Pipeline:
+- Scaling up with new features or teams might require significant reorganization.
+
+**Benefit**: Staged pipelines are more scalable and better suited for collaborative, iterative development.
+
+---
+
+## 8. Avoids Wasting Resources
+
+### Restructured Pipeline:
+- If a stage fails (e.g., `LintAndTest`), subsequent stages (`Build` or `Docker`) won’t execute, avoiding unnecessary resource usage.
+
+### Your Pipeline:
+- Every task runs sequentially without dependency checks, so later steps might execute unnecessarily, even after a failure.
+
+**Benefit**: Saves time and resources by stopping execution early if an issue arises.
+
+---
+
+## 9. Enhanced CI/CD Best Practices
+
+### Restructured Pipeline:
+- Aligns with industry-standard CI/CD practices by organizing pipelines into distinct phases (install, test, build, deploy).
+- Clear separation between code quality checks and artifact generation.
+
+### Your Pipeline:
+- While functional, it doesn’t fully adhere to CI/CD best practices for stage-based workflows.
+
+**Benefit**: Easier adoption of CI/CD best practices for improved development workflows.
+
+---
+
+### Conclusion
+
+The restructured pipeline provides better **organization**, **debugging**, **scalability**, and **efficiency**. It is ideal for teams following modern CI/CD methodologies and helps streamline complex projects while maintaining clarity and reliability.
+
+---
