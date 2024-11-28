@@ -3,8 +3,10 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-- feat/create-azurepipeline
+pr:
+  branches:
+    include:
+      - feat/create-azurepipeline
 
 pool:
   name: PoolRunners
