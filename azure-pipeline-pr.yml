@@ -49,6 +49,19 @@ steps:
     ls -R coverage || echo "No coverage directory found"
   displayName: 'Debug coverage directory'
 
+# Prepare HTML report for publishing
+- script: |
+    mkdir -p $(Build.ArtifactStagingDirectory)/html-coverage
+    cp -R coverage/lcov-report/* $(Build.ArtifactStagingDirectory)/html-coverage/
+  displayName: 'Prepare HTML coverage report'
+
+# Publish HTML report as a separate artifact
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)/html-coverage
+    artifactName: 'html-coverage-report'
+  displayName: 'Publish HTML coverage report'
+
 - script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/coverage
     cp -R coverage/* $(Build.ArtifactStagingDirectory)/coverage/
