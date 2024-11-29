@@ -9,7 +9,7 @@ pool:
   name: PoolRunners
 
 variables:
-  IMAGE_NAME: 'nestjs-baseapp'
+  IMAGE_NAME: 'fouadallaoui/nestjsbaseapp:$(Build.BuildId)'
 
 stages:
 
@@ -97,16 +97,37 @@ stages:
       displayName: 'Publish build artifacts'
 
 # Stage 4: Docker Build
-- stage: Docker
-  displayName: 'Docker Build Stage'
-  dependsOn: Build
+- stage: BuildImage
+  displayName: 'Build Docker Image'
+  dependsOn: Build  # Ensures this stage depends on the Build stage.
   jobs:
   - job: DockerBuild
-    displayName: 'Build Docker Image'
+    displayName: 'Build and Push Docker Image'
     steps:
-    - script: |
-        docker build -t $(IMAGE_NAME) .
-      displayName: 'Build Docker image locally'
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'DockerHub'  # Reference your DockerHub service connection.
+        repository: '$(IMAGE_NAME)'  # Correct variable reference for the image name.
+        command: 'build'  # Updated command syntax (Docker@2 uses "build").
+        Dockerfile: '**/Dockerfile'  # File path to the Dockerfile.
+        tags: |
+          $(Build.BuildId)
+      displayName: 'Build the Docker image'
+
+
+
+
+
+#- stage: Docker
+#  displayName: 'Docker Build Stage'
+#  dependsOn: Build
+#  jobs:
+#  - job: DockerBuild
+#    displayName: 'Build Docker Image'
+#    steps:
+#    - script: |
+#        docker build -t $(IMAGE_NAME) .
+#      displayName: 'Build Docker image locally'
 
   # Push to dockerhub
   #- job: DockerPush
