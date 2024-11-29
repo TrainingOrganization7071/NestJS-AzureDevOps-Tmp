@@ -122,7 +122,11 @@ stages:
         repository: '$(IMAGE_NAME)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))  # Push only if build succeeds and it's not a PR.
       displayName: 'Push the Docker image to DockerHub'
-
+      
+    - script: |
+        docker rmi $(IMAGE_NAME) || echo "Image already deleted"
+      displayName: 'Delete local Docker image'
+      condition: succeeded()
 
 
 
