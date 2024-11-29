@@ -102,7 +102,7 @@ stages:
   dependsOn: Build  # Ensures this stage depends on the Build stage.
   jobs:
   - job: DockerBuild
-    displayName: 'Build and Push Docker Image'
+    displayName: 'Build Docker Image'
     steps:
     - task: Docker@2
       inputs:
@@ -112,6 +112,16 @@ stages:
         Dockerfile: '**/Dockerfile'  # File path to the Dockerfile.
       displayName: 'Build the Docker image'
 
+  - job: DockerPush
+    displayName: 'Push Docker Image'
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'DockerHub'  # Reference the service connection for DockerHub.
+        command: 'push'
+        repository: '$(IMAGE_NAME)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))  # Push only if build succeeds and it's not a PR.
+      displayName: 'Push the Docker image to DockerHub'
 
 
 
