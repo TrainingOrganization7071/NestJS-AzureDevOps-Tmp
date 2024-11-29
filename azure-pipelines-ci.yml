@@ -9,7 +9,7 @@ pool:
   name: PoolRunners
 
 variables:
-  IMAGE_NAME: 'fouadallaoui/nestjsbaseapp:$(Build.BuildId)'
+  IMAGE_NAME: 'fouadallaoui/nestjsbaseapp'
 
 stages:
 
