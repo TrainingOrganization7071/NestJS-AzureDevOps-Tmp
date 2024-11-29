@@ -110,8 +110,6 @@ stages:
         repository: '$(IMAGE_NAME)'  # Correct variable reference for the image name.
         command: 'build'  # Updated command syntax (Docker@2 uses "build").
         Dockerfile: '**/Dockerfile'  # File path to the Dockerfile.
-        tags: |
-          $(Build.BuildId)
       displayName: 'Build the Docker image'
 
 
