@@ -127,7 +127,7 @@ stages:
       displayName: 'Push the Docker image to DockerHub'
       
     - script: |
-        docker rmi $(IMAGE_NAME) || echo "Image already deleted"
+        docker rmi $(IMAGE_NAME):$(Build.BuildId) || echo "Image already deleted"
       displayName: 'Delete local Docker image'
       condition: succeeded()
 
