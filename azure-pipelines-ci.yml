@@ -113,13 +113,14 @@ stages:
       displayName: 'Build the Docker image'
 
   - job: DockerPush
+    dependsOn: DockerBuild
     displayName: 'Push Docker Image'
     steps:
     - task: Docker@2
       inputs:
         containerRegistry: 'DockerHub'  # Reference the service connection for DockerHub.
-        command: 'push'
         repository: '$(IMAGE_NAME)'
+        command: 'push'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))  # Push only if build succeeds and it's not a PR.
       displayName: 'Push the Docker image to DockerHub'
       
