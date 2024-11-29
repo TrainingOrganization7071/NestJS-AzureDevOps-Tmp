@@ -4,6 +4,8 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger: none
+pr: none
+
 
 pool:
   name: PoolRunners
