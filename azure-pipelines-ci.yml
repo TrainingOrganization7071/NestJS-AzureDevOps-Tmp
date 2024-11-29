@@ -126,28 +126,5 @@ stages:
 
 
 
-#- stage: Docker
-#  displayName: 'Docker Build Stage'
-#  dependsOn: Build
-#  jobs:
-#  - job: DockerBuild
-#    displayName: 'Build Docker Image'
-#    steps:
-#    - script: |
-#        docker build -t $(IMAGE_NAME) .
-#      displayName: 'Build Docker image locally'
-
-  # Push to dockerhub
-  #- job: DockerPush
-  #  displayName: 'Push Docker Image to Registry'
-  #  dependsOn: DockerBuild
-  #  condition: succeeded()
-  #  steps:
-  #  - task: Docker@2
-  #    inputs:
-  #      command: push
-  #      containerRegistry: dockerhub
-  #      tags: |
-  #        $(IMAGE_NAME):latest
 
 
